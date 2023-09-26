@@ -19,7 +19,7 @@ public class EmployeeController {
     @Autowired
     public EmployeeRepo employeeRepo;
 
-    @GetMapping("/findall")
+    @GetMapping("/findAll")
     public List<Employee> getAllEmployee()
     {
       return   employeeRepo.findAll();

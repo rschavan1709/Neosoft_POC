@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import EmployeeService from '../services/EmployeeService';
+import { Link } from "react-router-dom";
 
 class ListEmployeeComponent extends Component {
     constructor(props){
@@ -8,6 +9,7 @@ class ListEmployeeComponent extends Component {
         this.state = {
             employees:[]
         }
+
     }
 
     componentDidMount(){
@@ -16,10 +18,17 @@ class ListEmployeeComponent extends Component {
         })
     }
 
+    
+    
     render() {
         return (
             <div>
                 <h2 className='text-center'>Employee List</h2>
+                <div>
+                    <Link to="/add-employee" className="btn btn-primary">
+                        Add Employee
+                    </Link>
+                </div>
                 <div className='row'>
                     <table className='table table-striped table-bordered'>
                         <thead>
@@ -38,6 +47,11 @@ class ListEmployeeComponent extends Component {
                                         <td>{employee.firstName}</td>
                                         <td>{employee.lastName}</td>
                                         <td>{employee.emailId}</td>
+                                        <td>
+                                            <Link to={`/update-employee/${employee.id}`} className='btn btn-info'>
+                                                Update
+                                            </Link>
+                                        </td>
                                     </tr>
                                 )
                             }
