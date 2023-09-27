@@ -20,12 +20,8 @@ function App() {
                 <Route path='/update-employee/:id' element={<UpdateEmployeeComponent/>}/>
               </Routes>
             </div>
-          {/* <FooterComponent/> */}
+          <FooterComponent/>
       </Router>
-    <div>
-      <FooterComponent/>
-    </div>
-
     </div>
   );
 }
