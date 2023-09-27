@@ -9,7 +9,7 @@ class ListEmployeeComponent extends Component {
         this.state = {
             employees:[]
         }
-
+        this.deleteEmployee=this.deleteEmployee.bind(this)
     }
 
     componentDidMount(){
@@ -18,7 +18,11 @@ class ListEmployeeComponent extends Component {
         })
     }
 
-    
+    deleteEmployee(id){
+        EmployeeService.deleteEmployee(id).then(res =>{
+            this.setState({employees: this.state.employees.filter(employee => employee.id !== id)})
+        })
+    }
     
     render() {
         return (
@@ -30,7 +34,7 @@ class ListEmployeeComponent extends Component {
                     </Link>
                 </div>
                 <div className='row'>
-                    <table className='table table-striped table-bordered'>
+                    <table className='table table-striped table-bordered' style={{marginTop:"10px"}}>
                         <thead>
                             <tr>
                                 <th>Employee First Name</th>
@@ -50,6 +54,9 @@ class ListEmployeeComponent extends Component {
                                         <td>
                                             <Link to={`/update-employee/${employee.id}`} className='btn btn-info'>
                                                 Update
+                                            </Link>
+                                            <Link onClick={() =>this.deleteEmployee(employee.id)} style={{marginLeft:"10px"}} className='btn btn-danger'>
+                                                Delete
                                             </Link>
                                         </td>
                                     </tr>
