@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Link,useParams,useNavigate } from "react-router-dom";
+import { confirmAlert } from 'react-confirm-alert'; 
+import 'react-confirm-alert/src/react-confirm-alert.css'
 import EmployeeService from '../services/EmployeeService';
 
 class UpdateEmployeeComponent extends Component {
@@ -40,7 +42,25 @@ class UpdateEmployeeComponent extends Component {
         this.setState({emailId:event.target.value})
     }
 
+    submit = (e) => {
+        confirmAlert({
+          title: 'Confirm to update',
+          message: 'Are you sure to do this.',
+          buttons: [
+            {
+              label: 'Yes',
+              onClick: () => this.updateEmployee(e)
+            },
+            {
+              label: 'No',
+              onClick: () => e.preventDefault()
+            }
+          ]
+        })
+    };
+
     updateEmployee=(e)=>{
+//        console.log(e);
         e.preventDefault();
         let updatedEmployee = {firstName:this.state.firstName, lastName:this.state.lastName, emailId: this.state.emailId}
         console.log('employee => ' +JSON.stringify(updatedEmployee))
@@ -74,7 +94,7 @@ class UpdateEmployeeComponent extends Component {
                                         <input placeholder='Email Address' name='emailId' className='form-control'
                                             value={this.state.emailId} onChange={this.changeEmailHandler}/>
                                     </div>
-                                    <Link className="btn btn-success" onClick={this.updateEmployee} style={{marginTop:"10px"}}>
+                                    <Link className="btn btn-success" onClick={this.submit} style={{marginTop:"10px"}}>
                                         Update
                                     </Link>
                                     <Link to="/employees" className="btn btn-danger" style={{marginTop:"10px",marginLeft:"10px"}}>

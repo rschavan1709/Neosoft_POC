@@ -3,8 +3,12 @@ package com.neosoft.ReactBackend.controller;
 import com.neosoft.ReactBackend.exception.ResourceNotFoundException;
 import com.neosoft.ReactBackend.model.Employee;
 import com.neosoft.ReactBackend.repository.EmployeeRepo;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -26,7 +30,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/save")
-    public Employee createEmployee(@RequestBody Employee employee){
+    public Employee createEmployee(@RequestBody @Valid Employee employee){
         return employeeRepo.save(employee);
     }
 
@@ -56,5 +60,18 @@ public class EmployeeController {
         Map<String,Boolean> response=new HashMap<>();
         response.put("deleted",Boolean.TRUE);
         return ResponseEntity.ok(response);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
     }
 }

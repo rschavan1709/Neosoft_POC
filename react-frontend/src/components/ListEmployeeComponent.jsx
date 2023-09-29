@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import EmployeeService from '../services/EmployeeService';
+import { confirmAlert } from 'react-confirm-alert'; 
+import 'react-confirm-alert/src/react-confirm-alert.css'
 import { Link } from "react-router-dom";
 
 class ListEmployeeComponent extends Component {
@@ -19,9 +21,21 @@ class ListEmployeeComponent extends Component {
     }
 
     deleteEmployee(id){
-        EmployeeService.deleteEmployee(id).then(res =>{
-            this.setState({employees: this.state.employees.filter(employee => employee.id !== id)})
-        })
+        confirmAlert({
+            title: 'Confirm to delete',
+            message: 'Are you sure to do this.',
+            buttons: [
+              {
+                label: 'Yes',
+                onClick: () => EmployeeService.deleteEmployee(id).then(res =>{
+                    this.setState({employees: this.state.employees.filter(employee => employee.id !== id)})
+                })
+              },
+              {
+                label: 'No'
+              }
+            ]
+          })
     }
     
     render() {
@@ -57,6 +71,9 @@ class ListEmployeeComponent extends Component {
                                             </Link>
                                             <Link onClick={() =>this.deleteEmployee(employee.id)} style={{marginLeft:"10px"}} className='btn btn-danger'>
                                                 Delete
+                                            </Link>
+                                            <Link to={`/view-employee/${employee.id}`} style={{marginLeft:"10px"}} className='btn btn-info'>
+                                                View
                                             </Link>
                                         </td>
                                     </tr>
