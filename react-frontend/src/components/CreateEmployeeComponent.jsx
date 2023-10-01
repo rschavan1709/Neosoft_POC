@@ -11,6 +11,7 @@ class CreateEmployeeComponent extends Component {
             firstName:'',
             lastName:'',
             emailId:'',
+            errorData:{},
             resgistrationSuccessful:false
         }
 
@@ -38,6 +39,8 @@ class CreateEmployeeComponent extends Component {
         console.log('employee => ' +JSON.stringify(employee))
         EmployeeService.createEmployee(employee).then(res =>{
             this.setState({resgistrationSuccessful:true})
+        }).catch(error =>{
+            this.setState({errorData: error.response.data})
         })
     }
 
@@ -58,15 +61,24 @@ class CreateEmployeeComponent extends Component {
                                         <input placeholder='First Name' name='firstName' className='form-control'
                                             value={this.state.firstName} onChange={this.changeFirstNameHandler}/>
                                     </div>
+                                    <div className='error-message'>
+                                        {this.state.errorData.firstName}
+                                    </div>
                                     <div className='form-group'>
                                         <label> Last Name: </label>
                                         <input placeholder='Last Name' name='lastName' className='form-control'
                                             value={this.state.lastName} onChange={this.changeLastNameHandler}/>
                                     </div>
+                                    <div className='error-message'>
+                                        {this.state.errorData.lastName}
+                                    </div>
                                     <div className='form-group'>
                                         <label> Email Id: </label>
                                         <input placeholder='Email Address' name='emailId' className='form-control'
                                             value={this.state.emailId} onChange={this.changeEmailHandler}/>
+                                    </div>
+                                    <div className='error-message'>
+                                        {this.state.errorData.emailId}
                                     </div>
                                     <Link className="btn btn-success" onClick={this.saveEmployee} style={{marginTop:"10px"}}>
                                         Save

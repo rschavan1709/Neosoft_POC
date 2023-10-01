@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import EmployeeService from '../services/EmployeeService';
 import { confirmAlert } from 'react-confirm-alert'; 
-import 'react-confirm-alert/src/react-confirm-alert.css'
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import {BsEyeFill,BsFillPencilFill,BsFillPlusSquareFill,BsFillTrashFill} from 'react-icons/bs';
 import { Link } from "react-router-dom";
 
 class ListEmployeeComponent extends Component {
@@ -44,7 +45,7 @@ class ListEmployeeComponent extends Component {
                 <h2 className='text-center'>Employee List</h2>
                 <div>
                     <Link to="/add-employee" className="btn btn-primary">
-                        Add Employee
+                        <BsFillPlusSquareFill/>
                     </Link>
                 </div>
                 <div className='row'>
@@ -67,13 +68,13 @@ class ListEmployeeComponent extends Component {
                                         <td>{employee.emailId}</td>
                                         <td>
                                             <Link to={`/update-employee/${employee.id}`} className='btn btn-info'>
-                                                Update
+                                                <BsFillPencilFill/>
                                             </Link>
                                             <Link onClick={() =>this.deleteEmployee(employee.id)} style={{marginLeft:"10px"}} className='btn btn-danger'>
-                                                Delete
+                                                <BsFillTrashFill/>
                                             </Link>
                                             <Link to={`/view-employee/${employee.id}`} style={{marginLeft:"10px"}} className='btn btn-info'>
-                                                View
+                                                <BsEyeFill/>
                                             </Link>
                                         </td>
                                     </tr>

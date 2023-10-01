@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {useParams} from "react-router-dom";
+import {useParams,Link} from "react-router-dom";
 import EmployeeService from '../services/EmployeeService';
 
 class ViewEmployeeComponent extends Component {
@@ -36,6 +36,11 @@ class ViewEmployeeComponent extends Component {
                              {this.state.employee.emailId} 
                         
                     </div>
+                </div>
+                <div className='text-center'>
+                    <Link to="/employees" className="btn btn-primary" style={{marginTop:"10px"}}>
+                        Back
+                    </Link>
                 </div>
             </div>
         );

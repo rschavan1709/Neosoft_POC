@@ -12,7 +12,8 @@ class UpdateEmployeeComponent extends Component {
             id: this.props.id,
             firstName:'',
             lastName:'',
-            emailId:''
+            emailId:'',
+            errorData:{}
         }
 
         this.changeFirstNameHandler=this.changeFirstNameHandler.bind(this)
@@ -66,6 +67,8 @@ class UpdateEmployeeComponent extends Component {
         console.log('employee => ' +JSON.stringify(updatedEmployee))
         EmployeeService.updateEmployee(updatedEmployee,this.state.id).then((res)=>{
             this.props.navigate('/employees');
+        }).catch(error =>{
+            this.setState({errorData: error.response.data})
         })
         
     }
@@ -76,7 +79,7 @@ class UpdateEmployeeComponent extends Component {
                 <div className='container'>
                     <div className='row'>
                         <div className='card col-md-6 offset-md-3 offset-md-3'>
-                            <h3 className='text-center'>Add Employee</h3>
+                            <h3 className='text-center'>Update Employee</h3>
                             <div className='card-body'>
                                 <form>
                                     <div className='form-group'>
@@ -84,15 +87,24 @@ class UpdateEmployeeComponent extends Component {
                                         <input placeholder='First Name' name='firstName' className='form-control'
                                             value={this.state.firstName} onChange={this.changeFirstNameHandler}/>
                                     </div>
+                                    <div className='error-message'>
+                                        {this.state.errorData.firstName}
+                                    </div>
                                     <div className='form-group'>
                                         <label> Last Name: </label>
                                         <input placeholder='Last Name' name='lastName' className='form-control'
                                             value={this.state.lastName} onChange={this.changeLastNameHandler}/>
                                     </div>
+                                    <div className='error-message'>
+                                        {this.state.errorData.lastName}
+                                    </div>
                                     <div className='form-group'>
                                         <label> Email Id: </label>
                                         <input placeholder='Email Address' name='emailId' className='form-control'
                                             value={this.state.emailId} onChange={this.changeEmailHandler}/>
+                                    </div>
+                                    <div className='error-message'>
+                                        {this.state.errorData.emailId}
                                     </div>
                                     <Link className="btn btn-success" onClick={this.submit} style={{marginTop:"10px"}}>
                                         Update

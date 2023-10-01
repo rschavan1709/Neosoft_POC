@@ -18,6 +18,7 @@ public class Employee {
     @NotEmpty(message = "Last Name is mandatory")
     private String lastName;
     @Email(message = "Email id is not valid")
+    @NotEmpty(message = "Email Id is mandatory")
     private String emailId;
 
     public Employee(){}
