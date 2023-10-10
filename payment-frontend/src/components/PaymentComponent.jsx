@@ -1,0 +1,83 @@
+import React, { Component } from 'react';
+import axios from 'axios';
+
+class PaymentComponent extends Component {
+
+    constructor(props){
+        super(props)
+
+        this.state = {
+            amount:0
+        }
+
+        this.changeAmountHandler=this.changeAmountHandler.bind(this)
+        this.handlePayment=this.handlePayment.bind(this)
+    }
+
+    changeAmountHandler=(event)=>{
+        this.setState({amount: event.target.value})
+    }
+
+    handlePayment = async () => {
+        // Make an API request to your Spring Boot backend to create a Razorpay order
+        const response  = await axios.post('http://localhost:8080/payment/create-order',
+                            { amount: this.state.amount,quantity:1});
+        const data = await response.json();
+        const options = {
+          key: 'rzp_test_4VYzrAhktF88j5',
+          amount: data.amount,
+          currency: data.currency,
+          order_id: data.id,
+          name: 'Riddhi',
+          description: 'Payment for Service',
+          image:"https://images.unsplash.com/photo-1562690868-60bbe7293e94?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cm9zZSUyMGZsb3dlcnxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80",
+          handler: function (response) {
+            // Handle successful payment here
+            console.log(response);
+            alert("Congrats !! Payment successful")
+          },
+          prefill: {
+            name: 'Riddhi Chavan',
+            email: 'rsc@example.com',
+            contact: '1234567890',
+          },
+          theme: {
+            color: '#F37254',
+          },
+        };
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', function (response) {
+        // Handle payment failure here
+        console.error(response.error.description);
+        alert("Payment Failed !!")
+    });
+
+    rzp.open();
+    };
+
+    render() {
+        return (
+            <div>
+                <div className='container'>
+                    <div className='row'>
+                        <div className='card col-md-6 offset-md-3'>
+                            <h3 className='text-center'>Payment Form</h3>
+                            <div className='card-body'>
+                                <form>
+                                    <input type='text' className='form-control my-2' name='amount' placeholder='Enter amount here'
+                                        onChange={this.changeAmountHandler}/>
+
+                                    <div className='container text-center mt-3'>
+                                        <button onClick={this.handlePayment} className='btn btn-success'>PAY</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+export default PaymentComponent;
