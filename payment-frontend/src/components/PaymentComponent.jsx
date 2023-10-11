@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import swal from 'sweetalert';
 import axios from 'axios';
 
 class PaymentComponent extends Component {
@@ -18,41 +19,55 @@ class PaymentComponent extends Component {
         this.setState({amount: event.target.value})
     }
 
-    handlePayment = async () => {
+    handlePayment = async() => {
         // Make an API request to your Spring Boot backend to create a Razorpay order
-        const response  = await axios.post('http://localhost:8080/payment/create-order',
-                            { amount: this.state.amount,quantity:1});
-        const data = await response.json();
-        const options = {
-          key: 'rzp_test_4VYzrAhktF88j5',
-          amount: data.amount,
-          currency: data.currency,
-          order_id: data.id,
-          name: 'Riddhi',
-          description: 'Payment for Service',
-          image:"https://images.unsplash.com/photo-1562690868-60bbe7293e94?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cm9zZSUyMGZsb3dlcnxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80",
-          handler: function (response) {
-            // Handle successful payment here
-            console.log(response);
-            alert("Congrats !! Payment successful")
-          },
-          prefill: {
-            name: 'Riddhi Chavan',
-            email: 'rsc@example.com',
-            contact: '1234567890',
-          },
-          theme: {
-            color: '#F37254',
-          },
-        };
-        const rzp = new window.Razorpay(options);
-        rzp.on('payment.failed', function (response) {
-        // Handle payment failure here
-        console.error(response.error.description);
-        alert("Payment Failed !!")
-    });
+        if(this.state.amount == "" || this.state.amount == null){
+            swal("Failed !!", "Amount is required !!", "error");
+            return;
+        }
+        let payment={amount: this.state.amount}
+        console.log(payment);
+        axios.post('http://localhost:8080/payment/create-order',payment
+                            ).then(response =>{
+                                console.log("resp :",response);
+                                const order =  response.data;
+                        
+                                console.log("order :",order);
+                                const options = {
+                                  key: 'rzp_test_4VYzrAhktF88j5',
+                                  amount: order.amount,
+                                  currency: order.currency,
+                                  order_id: order.orderId,
+                                  name: 'Riddhi',
+                                  description: 'Payment for Service',
+                                  image:"https://images.unsplash.com/photo-1562690868-60bbe7293e94?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cm9zZSUyMGZsb3dlcnxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80",
+                                  handler: function (response) {
+                                    // Handle successful payment here
+                                    console.log(response.razorpay_payment_id);
+                                    console.log(response.razorpay_order_id);
+                                    console.log(response.razorpay_signature);
+                                    swal("Good job!", "Congrats !! Payment successful", "success");
+                                  },
+                                  prefill: {
+                                    name: '',
+                                    email: '',
+                                    contact: '',
+                                  },
+                                  theme: {
+                                    color: '#F37254',
+                                  },
+                                };
+                                const rzp = new window.Razorpay(options);
+                                rzp.on('payment.failed', function (response) {
+                                // Handle payment failure here
+                                console.error(response.error.description);
+                                swal("Failed !!", "Payment Failed !!", "error");
+                            });
+                        
+                            rzp.open();
+                            });
 
-    rzp.open();
+       
     };
 
     render() {
@@ -68,7 +83,7 @@ class PaymentComponent extends Component {
                                         onChange={this.changeAmountHandler}/>
 
                                     <div className='container text-center mt-3'>
-                                        <button onClick={this.handlePayment} className='btn btn-success'>PAY</button>
+                                        <button type="button" onClick={this.handlePayment} className='btn btn-success'>PAY</button>
                                     </div>
                                 </form>
                             </div>
