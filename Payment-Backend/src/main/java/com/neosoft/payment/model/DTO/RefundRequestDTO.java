@@ -1,4 +1,4 @@
-package com.neosoft.payment.model;
+package com.neosoft.payment.model.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

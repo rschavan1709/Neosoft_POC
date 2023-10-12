@@ -1,16 +1,16 @@
-package com.neosoft.payment.model;
+package com.neosoft.payment.model.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderRequestDTO {
-    private BigDecimal amount;
+public class UpdateStatusRequestDTO {
+    private String orderId;
+    private String paymentId;
+    private String status;
 }

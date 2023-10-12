@@ -30,7 +30,7 @@ class RefundComponent extends Component {
                             ).then(response =>{
                                 swal("Good job!", response.data, "success");
                             }).catch(error => {
-                                swal("Failed !!", "Refund Failed !!", "error");
+                                swal("Failed !!",error.response.data , "error");
                             })
     }
 

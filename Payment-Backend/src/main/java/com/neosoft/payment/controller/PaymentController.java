@@ -1,10 +1,15 @@
 package com.neosoft.payment.controller;
 
-import com.neosoft.payment.model.OrderRequestDTO;
-import com.neosoft.payment.model.OrderResponseDTO;
-import com.neosoft.payment.model.RefundRequestDTO;
+import com.neosoft.payment.model.DTO.UpdateStatusRequestDTO;
+import com.neosoft.payment.repository.OrderPaymentRepository;
+import com.neosoft.payment.enums.OrderPaymentStatus;
+import com.neosoft.payment.model.DTO.OrderRequestDTO;
+import com.neosoft.payment.model.DTO.OrderResponseDTO;
+import com.neosoft.payment.model.DTO.RefundRequestDTO;
+import com.neosoft.payment.model.Entity.OrderPayment;
 import com.razorpay.*;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +27,9 @@ public class PaymentController {
     @Value("${razorpay.secret}")
     private String secret;
 
+    @Autowired
+    private OrderPaymentRepository orderPaymentRepository;
+
     @PostMapping("/create-order")
     public ResponseEntity<OrderResponseDTO> createOrder(@RequestBody OrderRequestDTO paymentData) throws RazorpayException {
         RazorpayClient razorpay = new RazorpayClient(key,secret);
@@ -34,12 +42,23 @@ public class PaymentController {
         Order order = razorpay.orders.create(jsonObject);
         System.out.println(order);
 
-        OrderResponseDTO orderResponseDTO =  OrderResponseDTO
+        if (order == null){
+            throw new RuntimeException("Order Not Created!!");
+        }
+
+        OrderPayment orderPayment=OrderPayment
                 .builder().orderId(order.get("id"))
-                .currency("INR")
+                .amount(paymentData.getAmount())
+                .currency(order.get("currency"))
+                .status(OrderPaymentStatus.ORDER_CREATED).build();
+
+        orderPaymentRepository.save(orderPayment);
+
+        OrderResponseDTO orderResponseDTO =  OrderResponseDTO
+                .builder().orderId(orderPayment.getOrderId())
+                .currency(orderPayment.getCurrency())
                 .amount(order.get("amount")).build();
 
-        System.out.println(orderResponseDTO);
         return ResponseEntity.ok(orderResponseDTO);
     }
 
@@ -47,11 +66,40 @@ public class PaymentController {
     public ResponseEntity<String> refundOrder(@RequestBody RefundRequestDTO refundRequestDTO) throws RazorpayException {
         RazorpayClient razorpay = new RazorpayClient(key,secret);
 
+        OrderPayment orderPayment = orderPaymentRepository.findByPaymentId(refundRequestDTO.getPaymentId());
+        if (orderPayment == null)
+            throw new RuntimeException("Invalid payment id");
+
         JSONObject refundRequest = new JSONObject();
         refundRequest.put("speed","optimum");
         refundRequest.put("receipt","Receipt:"+refundRequestDTO.getPaymentId());
 
-        Refund payment = razorpay.payments.refund(refundRequestDTO.getPaymentId(),refundRequest);
+        Refund refund = razorpay.payments.refund(refundRequestDTO.getPaymentId(),refundRequest);
+        if (refund == null)
+            throw new RuntimeException("Payment Not Refunded");
+
+        orderPayment.setStatus(OrderPaymentStatus.REFUNDED);
+        orderPaymentRepository.save(orderPayment);
+
         return ResponseEntity.ok("Refund successfully done");
+    }
+
+    @PostMapping("/update-status")
+    public ResponseEntity updateStatus(@RequestBody UpdateStatusRequestDTO updateStatusRequestDTO){
+       OrderPayment orderPayment= orderPaymentRepository.findByOrderId(updateStatusRequestDTO.getOrderId());
+       if (orderPayment == null)
+           throw new RuntimeException("OrderPayment Not found");
+       orderPayment.setPaymentId(updateStatusRequestDTO.getPaymentId());
+       if (updateStatusRequestDTO.getStatus().equals(OrderPaymentStatus.PAID.toString())){
+           orderPayment.setStatus(OrderPaymentStatus.PAID);
+       }
+       else if(updateStatusRequestDTO.getStatus().equals(OrderPaymentStatus.FAILED.toString())){
+           orderPayment.setStatus(OrderPaymentStatus.FAILED);
+       }
+       else {
+           throw new RuntimeException("Status Not Valid");
+       }
+       orderPaymentRepository.save(orderPayment);
+       return ResponseEntity.ok("Status Updated Successfully");
     }
 }

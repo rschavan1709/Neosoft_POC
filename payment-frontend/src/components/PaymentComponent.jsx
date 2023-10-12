@@ -46,6 +46,10 @@ class PaymentComponent extends Component {
                                     console.log(response.razorpay_payment_id);
                                     console.log(response.razorpay_order_id);
                                     console.log(response.razorpay_signature);
+                                    let updatePaidStatus={orderId: response.razorpay_order_id
+                                        ,paymentId: response.razorpay_payment_id
+                                        ,status: "PAID" };
+                                    axios.post('http://localhost:8080/payment/update-status',updatePaidStatus)
                                     swal("Good job!", "Congrats !! Payment successful", "success");
                                   },
                                   prefill: {
@@ -60,8 +64,11 @@ class PaymentComponent extends Component {
                                 const rzp = new window.Razorpay(options);
                                 rzp.on('payment.failed', function (response) {
                                 // Handle payment failure here
-                                console.error(response.error.description);
-                                swal("Failed !!", "Payment Failed !!", "error");
+                                console.error(response.error.metadata);
+                                let updateFailStatus={orderId: response.error.metadata.order_id,
+                                    paymentId: response.error.metadata.payment_id,
+                                    status: "FAILED"};
+                                axios.post('http://localhost:8080/payment/update-status',updateFailStatus);
                             });
                         
                             rzp.open();
