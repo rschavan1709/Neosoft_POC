@@ -50,7 +50,7 @@ public class PaymentController {
                 .builder().orderId(order.get("id"))
                 .amount(paymentData.getAmount())
                 .currency(order.get("currency"))
-                .status(OrderPaymentStatus.ORDER_CREATED).build();
+                .status(OrderPaymentStatus.CREATED).build();
 
         orderPaymentRepository.save(orderPayment);
 
@@ -95,6 +95,9 @@ public class PaymentController {
        }
        else if(updateStatusRequestDTO.getStatus().equals(OrderPaymentStatus.FAILED.toString())){
            orderPayment.setStatus(OrderPaymentStatus.FAILED);
+       }
+       else if(updateStatusRequestDTO.getStatus().equals(OrderPaymentStatus.CANCELLED.toString())){
+           orderPayment.setStatus(OrderPaymentStatus.CANCELLED);
        }
        else {
            throw new RuntimeException("Status Not Valid");

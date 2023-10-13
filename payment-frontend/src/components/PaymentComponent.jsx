@@ -60,6 +60,13 @@ class PaymentComponent extends Component {
                                   theme: {
                                     color: '#F37254',
                                   },
+                                  "modal": {
+                                    "ondismiss": function(){
+                                        console.log('Checkout form closed');
+                                        let updateCancelStatus={orderId: order.orderId,status: "CANCELLED"};
+                                        axios.post('http://localhost:8080/payment/update-status',updateCancelStatus)
+                                        }
+                                  }
                                 };
                                 const rzp = new window.Razorpay(options);
                                 rzp.on('payment.failed', function (response) {
