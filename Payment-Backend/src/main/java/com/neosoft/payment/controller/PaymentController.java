@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/payment")
@@ -50,6 +51,7 @@ public class PaymentController {
                 .builder().orderId(order.get("id"))
                 .amount(paymentData.getAmount())
                 .currency(order.get("currency"))
+                .attempts(order.get("attempts"))
                 .status(OrderPaymentStatus.CREATED).build();
 
         orderPaymentRepository.save(orderPayment);
@@ -85,11 +87,14 @@ public class PaymentController {
     }
 
     @PostMapping("/update-status")
-    public ResponseEntity updateStatus(@RequestBody UpdateStatusRequestDTO updateStatusRequestDTO){
+    public ResponseEntity updateStatus(@RequestBody UpdateStatusRequestDTO updateStatusRequestDTO) throws RazorpayException {
+       RazorpayClient razorpay=new RazorpayClient(key,secret);
        OrderPayment orderPayment= orderPaymentRepository.findByOrderId(updateStatusRequestDTO.getOrderId());
-       if (orderPayment == null)
+       Optional<Order> order = Optional.ofNullable(razorpay.orders.fetch(updateStatusRequestDTO.getOrderId()));
+       if (orderPayment == null || order == null)
            throw new RuntimeException("OrderPayment Not found");
        orderPayment.setPaymentId(updateStatusRequestDTO.getPaymentId());
+       orderPayment.setAttempts(order.get().get("attempts"));
        if (updateStatusRequestDTO.getStatus().equals(OrderPaymentStatus.PAID.toString())){
            orderPayment.setStatus(OrderPaymentStatus.PAID);
        }

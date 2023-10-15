@@ -6,13 +6,13 @@ import com.neosoft.payment.repository.OrderPaymentRepository;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,16 +32,13 @@ public class UpdateStatusScheduler {
     public void updateStatusSchedule() throws RazorpayException {
 
         RazorpayClient razorpay = new RazorpayClient(key, secret);
-        List<OrderPayment> orderPaymentList =orderPaymentRepository.findAll();
+        List<OrderPayment> orderPaymentList =orderPaymentRepository.findByStatus(OrderPaymentStatus.CREATED);
         for (OrderPayment orderPayment:orderPaymentList){
             Optional<Order> order = Optional.ofNullable(razorpay.orders.fetch(orderPayment.getOrderId()));
-            LocalDateTime currentDateTime=LocalDateTime.now();
-            if (orderPayment.getStatus().equals(OrderPaymentStatus.CREATED) && currentDateTime.isAfter(orderPayment.getCreatedAt().plusMinutes(12)))
-                orderPayment.setStatus(OrderPaymentStatus.CANCELLED);
-            else {
-                String status = order.get().get("status");
-                orderPayment.setStatus(OrderPaymentStatus.valueOf(status.toUpperCase()));
-            }
+            Date date=order.get().get("created_at");
+            LocalDateTime dateTime=date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            if (LocalDateTime.now().isAfter(dateTime.plusMinutes(12)))
+                    orderPayment.setStatus(OrderPaymentStatus.CANCELLED);
             orderPaymentRepository.save(orderPayment);
         }
 

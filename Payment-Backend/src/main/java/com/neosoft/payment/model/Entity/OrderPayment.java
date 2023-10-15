@@ -25,6 +25,7 @@ public class OrderPayment {
     private String paymentId;
     private BigDecimal amount;
     private String currency;
+    private int attempts;
     @Enumerated(EnumType.STRING)
     private OrderPaymentStatus status;
     @CreatedDate
