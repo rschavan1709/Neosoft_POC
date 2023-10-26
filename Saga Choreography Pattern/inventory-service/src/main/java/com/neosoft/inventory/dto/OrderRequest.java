@@ -1,21 +1,18 @@
-package com.neosoft.order.entity;
+package com.neosoft.inventory.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "orders")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order {
-    @Id
-    @GeneratedValue
-    private Integer id;
+public class OrderRequest {
+
     private String item;
     private int quantity;
     private double price;
-    private String status;
+    private String paymentMode;
+    private Integer orderId;
+    private String address;
 }

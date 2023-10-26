@@ -29,7 +29,7 @@ public class OrderService {
             OrderEvent event = new OrderEvent();
             event.setOrder(orderRequest);
             event.setType("ORDER_CREATED");
-            this.kafkaTemplate.send("new-order", event);
+            kafkaTemplate.send("new-orders", event);
         }catch (Exception e){
             order.setStatus("FAILED");
             orderRepository.save(order);

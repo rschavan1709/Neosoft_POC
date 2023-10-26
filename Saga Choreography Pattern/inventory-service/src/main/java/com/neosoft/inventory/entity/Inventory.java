@@ -1,21 +1,20 @@
-package com.neosoft.order.entity;
+package com.neosoft.inventory.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "orders")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order {
+public class Inventory {
     @Id
     @GeneratedValue
     private Integer id;
-    private String item;
     private int quantity;
-    private double price;
-    private String status;
+    private String item;
 }
