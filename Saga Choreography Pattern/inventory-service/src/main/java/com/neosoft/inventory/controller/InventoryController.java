@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class InventoryController {
 
@@ -35,17 +37,18 @@ public class InventoryController {
         OrderRequest order=p.getOrder();
 
         try{
-            Iterable<Inventory> inventories=inventoryRepository.findByItem(order.getItem());
+            List<Inventory> inventories=inventoryRepository.findByItem(order.getItem());
             boolean exists=inventories.iterator().hasNext();
 
             if (!exists)
                 throw new Exception("Stock not available");
 
-            inventories.forEach(
-                    i -> {
-                        i.setQuantity(i.getQuantity() - order.getQuantity());
-                        inventoryRepository.save(i);
-                    });
+            for (Inventory i:inventories){
+                if (i.getQuantity() < order.getQuantity())
+                    throw new Exception("Out of Stock");
+                i.setQuantity(i.getQuantity() - order.getQuantity());
+                inventoryRepository.save(i);
+            }
 
             event.setType("INVENTORY_UPDATED");
             event.setOrder(p.getOrder());
