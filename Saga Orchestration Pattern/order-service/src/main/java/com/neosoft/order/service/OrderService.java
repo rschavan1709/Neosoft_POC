@@ -3,7 +3,7 @@ package com.neosoft.order.service;
 import com.neosoft.order.dto.OrchestratorRequestDTO;
 import com.neosoft.order.dto.OrderRequestDTO;
 import com.neosoft.order.dto.OrderResponseDTO;
-import com.neosoft.order.entity.Order;
+import com.neosoft.order.entity.Orders;
 import com.neosoft.order.enums.OrderStatus;
 import com.neosoft.order.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class OrderService {
     @Autowired
     private Sinks.Many<OrchestratorRequestDTO> sink;
 
-    public Mono<Order> createOrder(OrderRequestDTO orderRequestDTO){
+    public Mono<Orders> createOrder(OrderRequestDTO orderRequestDTO){
          return orderRepository.save(dtoToEntity(orderRequestDTO))
                 .doOnNext(e -> orderRequestDTO.setOrderId(e.getId()))
                 .doOnNext(e -> emitEvent(orderRequestDTO));
@@ -53,8 +53,8 @@ public class OrderService {
         return orchestratorRequestDTO;
     }
 
-    private Order dtoToEntity(final OrderRequestDTO orderRequestDTO) {
-        Order order=new Order();
+    private Orders dtoToEntity(final OrderRequestDTO orderRequestDTO) {
+        Orders order=new Orders();
         order.setUserId(orderRequestDTO.getUserId());
         order.setProductId(orderRequestDTO.getProductId());
         order.setPrice(ORDER_PRICE.get(order.getProductId()));
@@ -63,7 +63,7 @@ public class OrderService {
         return order;
     }
 
-    private OrderResponseDTO entityToDto(Order order){
+    private OrderResponseDTO entityToDto(Orders order){
         OrderResponseDTO orderResponseDTO=new OrderResponseDTO();
         orderResponseDTO.setOrderId(order.getId());
         orderResponseDTO.setProductId(order.getProductId());

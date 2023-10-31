@@ -1,6 +1,6 @@
 package com.neosoft.orderorchestrator.dto;
 
-import com.neosoft.order.enums.OrderStatus;
+import com.neosoft.orderorchestrator.enums.OrderStatus;
 import lombok.Data;
 
 import java.util.UUID;

@@ -2,13 +2,10 @@ package com.neosoft.order.controller;
 
 import com.neosoft.order.dto.OrderRequestDTO;
 import com.neosoft.order.dto.OrderResponseDTO;
-import com.neosoft.order.entity.Order;
+import com.neosoft.order.entity.Orders;
 import com.neosoft.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -20,11 +17,11 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping("/create")
-    public Mono<Order> createOrder(@RequestBody Mono<OrderRequestDTO> orderMono){
+    public Mono<Orders> createOrder(@RequestBody Mono<OrderRequestDTO> orderMono){
         return orderMono.flatMap(orderService::createOrder);
     }
 
-    @PostMapping("/all")
+    @GetMapping("/all")
     public Flux<OrderResponseDTO> getOrders(){
         return orderService.getAllOrder();
     }

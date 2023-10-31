@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id;
 import java.util.UUID;
 
 @Data
-public class Order {
+public class Orders {
     @Id
     private UUID id;
     private Integer userId;
