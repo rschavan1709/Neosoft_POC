@@ -23,15 +23,5 @@ public class AppExceptionHandler {
                 .data(null).build(),HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ResponseBody
-    public ResponseEntity<BaseResponse> userNotFoundException(final UserNotFoundException ex)
-    {
-        return new ResponseEntity<>(BaseResponse.builder()
-                .code(HttpStatus.NOT_FOUND.value())
-                .message(ex.getMessage())
-                .error(ex.getMessage())
-                .data(null).build(),HttpStatus.NOT_FOUND);
-    }
+
 }

@@ -6,12 +6,10 @@ import com.neosoft.user.dto.UserResponse;
 import com.neosoft.user.entity.User;
 import com.neosoft.user.enums.UserRole;
 import com.neosoft.user.enums.UserStatus;
-import com.neosoft.user.exceptions.UserNotFoundException;
 import com.neosoft.user.repository.UserRepository;
 import com.neosoft.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -62,7 +60,9 @@ public class UserServiceImpl implements UserService {
         try{
             User user=userRepository.findByUserId(userId);
             if (Objects.isNull(user)){
-                throw new UserNotFoundException("Invalid User Id");
+                return BaseResponse.builder()
+                        .code(HttpStatus.NOT_FOUND.value())
+                        .message("Invalid User Id").build();
             }
             UserResponse userResponse=UserResponse.builder()
                     .userId(user.getUserId())
@@ -113,7 +113,9 @@ public class UserServiceImpl implements UserService {
         try{
             User user=userRepository.findByUserId(userId);
             if (Objects.isNull(user)){
-                throw new UserNotFoundException("Invalid User Id");
+                return BaseResponse.builder()
+                        .code(HttpStatus.NOT_FOUND.value())
+                        .message("Invalid User Id").build();
             }
             if (userRequest.getFirstName() != null)
                 user.setFirstName(userRequest.getFirstName());
@@ -150,7 +152,9 @@ public class UserServiceImpl implements UserService {
         try{
             User user=userRepository.findByUserId(userId);
             if (Objects.isNull(user)){
-                throw new UserNotFoundException("Invalid User Id");
+                return BaseResponse.builder()
+                        .code(HttpStatus.NOT_FOUND.value())
+                        .message("Invalid User Id").build();
             }
             user.setStatus(UserStatus.INACTIVE);
             userRepository.save(user);
