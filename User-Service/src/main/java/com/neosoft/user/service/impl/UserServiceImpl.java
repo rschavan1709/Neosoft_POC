@@ -6,6 +6,7 @@ import com.neosoft.user.dto.UserResponse;
 import com.neosoft.user.entity.User;
 import com.neosoft.user.enums.UserRole;
 import com.neosoft.user.enums.UserStatus;
+import com.neosoft.user.exceptions.UserNotFoundException;
 import com.neosoft.user.repository.UserRepository;
 import com.neosoft.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BaseResponse addUser(UserRequest userRequest) {
-        User user=null;
-        try {
-             user = User.builder()
+             User user = User.builder()
                     .userId(UUID.randomUUID())
                     .firstName(userRequest.getFirstName())
                     .lastName(userRequest.getLastName())
@@ -50,19 +49,13 @@ public class UserServiceImpl implements UserService {
                     .code(HttpStatus.OK.value())
                     .message("User Registered Successfully")
                     .data(userResponse).build();
-        }catch (Exception e){
-            throw new RuntimeException("Failed to register user");
-        }
     }
 
     @Override
     public BaseResponse getUserByUserId(UUID userId) {
-        try{
             User user=userRepository.findByUserId(userId);
             if (Objects.isNull(user)){
-                return BaseResponse.builder()
-                        .code(HttpStatus.NOT_FOUND.value())
-                        .message("Invalid User Id").build();
+                throw new UserNotFoundException("User Not Found");
             }
             UserResponse userResponse=UserResponse.builder()
                     .userId(user.getUserId())
@@ -75,16 +68,12 @@ public class UserServiceImpl implements UserService {
                     .status(user.getStatus()).build();
             return BaseResponse.builder()
                     .code(HttpStatus.OK.value())
-                    .message("User Fetched Successfully")
+                    .message("User Details Fetched Successfully")
                     .data(userResponse).build();
-        }catch (Exception e){
-            throw new RuntimeException("Failed to fetch user");
-        }
     }
 
     @Override
     public BaseResponse getAllUsers() {
-        try{
             List<User> userList = userRepository.findAll();
             List<UserResponse> userResponseList=new ArrayList<>();
             for (User user:userList){
@@ -101,32 +90,21 @@ public class UserServiceImpl implements UserService {
             }
             return BaseResponse.builder()
                     .code(HttpStatus.OK.value())
-                    .message("All Users Fetched Successfully")
+                    .message("All Users Details Fetched Successfully")
                     .data(userResponseList).build();
-        }catch (Exception e){
-            throw new RuntimeException("Failed to fetch all users");
-        }
     }
 
     @Override
     public BaseResponse updateUser(UserRequest userRequest, UUID userId) {
-        try{
             User user=userRepository.findByUserId(userId);
             if (Objects.isNull(user)){
-                return BaseResponse.builder()
-                        .code(HttpStatus.NOT_FOUND.value())
-                        .message("Invalid User Id").build();
+                throw new UserNotFoundException("User Not Found");
             }
-            if (userRequest.getFirstName() != null)
-                user.setFirstName(userRequest.getFirstName());
-            else if (userRequest.getLastName() != null)
-                user.setLastName(userRequest.getLastName());
-            else if (userRequest.getAge() != 0)
-                user.setAge(userRequest.getAge());
-            else if (userRequest.getMobileNo() != null)
-                user.setMobileNo(userRequest.getMobileNo());
-            else if (userRequest.getEmail() != null)
-                user.setEmail(userRequest.getEmail());
+            user.setFirstName(userRequest.getFirstName());
+            user.setLastName(userRequest.getLastName());
+            user.setAge(userRequest.getAge());
+            user.setMobileNo(userRequest.getMobileNo());
+            user.setEmail(userRequest.getEmail());
             user=userRepository.save(user);
             UserResponse userResponse=UserResponse.builder()
                     .userId(user.getUserId())
@@ -140,29 +118,20 @@ public class UserServiceImpl implements UserService {
 
             return BaseResponse.builder()
                     .code(HttpStatus.OK.value())
-                    .message("User Updated Successfully")
+                    .message("User Details Updated Successfully")
                     .data(userResponse).build();
-        }catch (Exception e){
-            throw new RuntimeException("Failed to update user");
-        }
     }
 
     @Override
     public BaseResponse deleteUser(UUID userId) {
-        try{
             User user=userRepository.findByUserId(userId);
             if (Objects.isNull(user)){
-                return BaseResponse.builder()
-                        .code(HttpStatus.NOT_FOUND.value())
-                        .message("Invalid User Id").build();
+                throw new UserNotFoundException("User Not Found");
             }
             user.setStatus(UserStatus.INACTIVE);
             userRepository.save(user);
             return BaseResponse.builder()
                     .code(HttpStatus.OK.value())
-                    .message("User Deleted Successfully").build();
-        }catch (Exception e){
-            throw new RuntimeException("Failed to delete user");
-        }
+                    .message("User Details Deleted Successfully").build();
     }
 }

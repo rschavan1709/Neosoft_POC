@@ -1,6 +1,6 @@
-package com.neosoft.user.exceptions;
+package com.neosoft.bus.exceptions;
 
-import com.neosoft.user.dto.BaseResponse;
+import com.neosoft.bus.dto.BaseResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -23,10 +23,22 @@ public class AppExceptionHandler {
                 .build(),HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler(BusAlreadyPresentException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public ResponseEntity<BaseResponse> alreadyPresentException(final BusAlreadyPresentException ex)
+    {
+        return new ResponseEntity<>(BaseResponse.builder()
+                .code(HttpStatus.CONFLICT.value())
+                .message(ex.getMessage())
+                .error(ex.getMessage())
+                .build(),HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(BusNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public ResponseEntity<BaseResponse> notFoundException(final UserNotFoundException ex)
+    public ResponseEntity<BaseResponse> notFoundException(final BusNotFoundException ex)
     {
         return new ResponseEntity<>(BaseResponse.builder()
                 .code(HttpStatus.NOT_FOUND.value())
@@ -34,5 +46,6 @@ public class AppExceptionHandler {
                 .error(ex.getMessage())
                 .build(),HttpStatus.NOT_FOUND);
     }
+
 
 }
