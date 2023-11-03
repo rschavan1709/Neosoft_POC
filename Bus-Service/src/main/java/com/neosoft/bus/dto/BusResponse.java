@@ -1,5 +1,6 @@
 package com.neosoft.bus.dto;
 
+import com.neosoft.bus.entity.BusRoute;
 import com.neosoft.bus.enums.BusStatus;
 import lombok.Builder;
 import lombok.Data;
@@ -20,5 +21,6 @@ public class BusResponse {
     private Integer totalSeats;
     private Integer availableSeats;
     private List<String> haltStops;
+    private List<BusRouteResponse> busRoutes;
     private BusStatus status;
 }

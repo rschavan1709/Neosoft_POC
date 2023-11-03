@@ -7,6 +7,7 @@ import com.neosoft.bus.entity.Bus;
 import com.neosoft.bus.enums.BusStatus;
 import com.neosoft.bus.exceptions.BusAlreadyPresentException;
 import com.neosoft.bus.exceptions.BusNotFoundException;
+import com.neosoft.bus.helper.Helper;
 import com.neosoft.bus.repository.BusRepository;
 import com.neosoft.bus.service.BusService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,31 +30,10 @@ public class BusServiceImpl implements BusService {
             Integer busNo  = random. nextInt(900) + 100;
             if (busRepository.findByBusNo(busNo) != null)
                 throw new BusAlreadyPresentException("Bus no is already present.Please try again");
-            Bus bus= Bus.builder()
-                    .busId(UUID.randomUUID())
-                    .busNo(busNo)
-                    .busName(busRequest.getBusName())
-                    .routeFrom(busRequest.getRouteFrom())
-                    .routeTo(busRequest.getRouteTo())
-                    .arrivalTime(busRequest.getArrivalTime())
-                    .departureTime(busRequest.getDepartureTime())
-                    .totalSeats(busRequest.getTotalSeats())
-                    .availableSeats(busRequest.getTotalSeats())
-                    .haltStops(busRequest.getHaltStops())
-                    .status(BusStatus.ACTIVE).build();
+            Bus bus= Helper.convertDtoToEntity(busRequest);
+            bus.setBusNo(busNo);
             bus=busRepository.save(bus);
-            BusResponse busResponse=BusResponse.builder()
-                    .busId(bus.getBusId())
-                    .busNo(bus.getBusNo())
-                    .busName(bus.getBusName())
-                    .routeFrom(bus.getRouteFrom())
-                    .routeTo(bus.getRouteTo())
-                    .arrivalTime(bus.getArrivalTime())
-                    .departureTime(bus.getDepartureTime())
-                    .totalSeats(bus.getTotalSeats())
-                    .availableSeats(bus.getAvailableSeats())
-                    .haltStops(bus.getHaltStops())
-                    .status(bus.getStatus()).build();
+            BusResponse busResponse=Helper.convertEntityToDto(bus);
             return BaseResponse.builder()
                     .code(HttpStatus.OK.value())
                     .message("Bus Details added successfully")
@@ -65,18 +45,7 @@ public class BusServiceImpl implements BusService {
             Bus bus=busRepository.findByBusId(busId);
             if (Objects.isNull(bus))
                 throw new BusNotFoundException("Bus Not Found");
-            BusResponse busResponse=BusResponse.builder()
-                    .busId(bus.getBusId())
-                    .busNo(bus.getBusNo())
-                    .busName(bus.getBusName())
-                    .routeFrom(bus.getRouteFrom())
-                    .routeTo(bus.getRouteTo())
-                    .arrivalTime(bus.getArrivalTime())
-                    .departureTime(bus.getDepartureTime())
-                    .totalSeats(bus.getTotalSeats())
-                    .availableSeats(bus.getAvailableSeats())
-                    .haltStops(bus.getHaltStops())
-                    .status(bus.getStatus()).build();
+            BusResponse busResponse=Helper.convertEntityToDto(bus);
             return BaseResponse.builder()
                     .code(HttpStatus.OK.value())
                     .message("Bus Details Fetched successfully")
@@ -88,18 +57,7 @@ public class BusServiceImpl implements BusService {
         List<Bus> busList=busRepository.findAll();
         List<BusResponse> busResponseList=new ArrayList<>();
         for (Bus bus:busList){
-            BusResponse busResponse=BusResponse.builder()
-                    .busId(bus.getBusId())
-                    .busNo(bus.getBusNo())
-                    .busName(bus.getBusName())
-                    .routeFrom(bus.getRouteFrom())
-                    .routeTo(bus.getRouteTo())
-                    .arrivalTime(bus.getArrivalTime())
-                    .departureTime(bus.getDepartureTime())
-                    .totalSeats(bus.getTotalSeats())
-                    .availableSeats(bus.getAvailableSeats())
-                    .haltStops(bus.getHaltStops())
-                    .status(bus.getStatus()).build();
+            BusResponse busResponse=Helper.convertEntityToDto(bus);
             busResponseList.add(busResponse);
         }
         return BaseResponse.builder()
@@ -118,12 +76,6 @@ public class BusServiceImpl implements BusService {
         return BaseResponse.builder()
                 .code(HttpStatus.OK.value())
                 .message("Bus Details Deleted Successfully").build();
-    }
-
-    @Override
-    public BaseResponse getBusesBySourceAndDestination(String source, String destination) {
-
-        return null;
     }
 
     @Override

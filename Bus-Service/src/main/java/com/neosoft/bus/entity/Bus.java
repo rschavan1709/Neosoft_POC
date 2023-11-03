@@ -31,4 +31,7 @@ public class Bus {
     private List<String> haltStops;
     @Enumerated(EnumType.STRING)
     private BusStatus status;
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "bus_id")
+    private List<BusRoute> busRoutes;
 }

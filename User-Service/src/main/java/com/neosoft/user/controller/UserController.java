@@ -2,6 +2,7 @@ package com.neosoft.user.controller;
 
 import com.neosoft.user.dto.UserRequest;
 import com.neosoft.user.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,14 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/v1/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @PostMapping("/add")
-    public ResponseEntity add(@RequestBody UserRequest userRequest){
+    @PostMapping("/add-user")
+    public ResponseEntity addUser(@RequestBody @Valid UserRequest userRequest){
         return ResponseEntity.ok(userService.addUser(userRequest));
     }
 
@@ -30,8 +31,8 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @PatchMapping("/update/{userId}")
-    public ResponseEntity updateUser(@RequestBody UserRequest userRequest,@PathVariable UUID userId){
+    @PutMapping("/update/{userId}")
+    public ResponseEntity updateUser(@RequestBody @Valid UserRequest userRequest,@PathVariable UUID userId){
         return ResponseEntity.ok(userService.updateUser(userRequest,userId));
     }
 

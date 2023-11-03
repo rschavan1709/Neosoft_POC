@@ -2,8 +2,6 @@ package com.neosoft.bus.dto;
 
 import lombok.Builder;
 import lombok.Data;
-
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -17,4 +15,5 @@ public class BusRequest {
     private LocalTime departureTime;
     private Integer totalSeats;
     private List<String> haltStops;
+    private List<BusRouteRequest> busRoutes;
 }
