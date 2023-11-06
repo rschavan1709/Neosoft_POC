@@ -14,5 +14,7 @@ public interface BusService {
 
     BaseResponse deleteBus(UUID busId);
 
-    BaseResponse getStopsByBusNo(Integer busNo);
+    BaseResponse getStopsByBusId(UUID busId);
+
+    BaseResponse getBusesFromSourceAndDestination(String source, String destination, String dateTime);
 }

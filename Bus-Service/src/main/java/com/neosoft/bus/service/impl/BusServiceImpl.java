@@ -1,19 +1,23 @@
 package com.neosoft.bus.service.impl;
 
-import com.neosoft.bus.dto.BaseResponse;
-import com.neosoft.bus.dto.BusRequest;
-import com.neosoft.bus.dto.BusResponse;
+import com.neosoft.bus.dto.*;
 import com.neosoft.bus.entity.Bus;
+import com.neosoft.bus.entity.BusStop;
 import com.neosoft.bus.enums.BusStatus;
 import com.neosoft.bus.exceptions.BusAlreadyPresentException;
 import com.neosoft.bus.exceptions.BusNotFoundException;
 import com.neosoft.bus.helper.Helper;
 import com.neosoft.bus.repository.BusRepository;
+import com.neosoft.bus.repository.BusRouteRepository;
 import com.neosoft.bus.service.BusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.*;
 
 @Service
@@ -21,6 +25,9 @@ public class BusServiceImpl implements BusService {
 
     @Autowired
     private BusRepository busRepository;
+
+    @Autowired
+    private BusRouteRepository busRouteRepository;
 
     @Override
     public BaseResponse addBus(BusRequest busRequest) {
@@ -79,14 +86,52 @@ public class BusServiceImpl implements BusService {
     }
 
     @Override
-    public BaseResponse getStopsByBusNo(Integer busNo) {
-        Bus bus=busRepository.findByBusNo(busNo);
+    public BaseResponse getStopsByBusId(UUID busId) {
+        Bus bus=busRepository.findByBusId(busId);
         if (Objects.isNull(bus))
             throw new BusNotFoundException("Bus Not Found");
-        List<String> haltStops=bus.getHaltStops();
+        List<BusStopResponse> haltStopResponseList=new ArrayList<>();
+        for (BusStop busStop:bus.getHaltStops()){
+            BusStopResponse haltStopResponse=BusStopResponse.builder()
+                    .haltStop(busStop.getHaltStop())
+                    .time(busStop.getTime()).build();
+            haltStopResponseList.add(haltStopResponse);
+        }
         return BaseResponse.builder()
                 .code(HttpStatus.OK.value())
                 .message("Bus Stops Fetched Successfully")
-                .data(haltStops).build();
+                .data(haltStopResponseList).build();
+    }
+
+    @Override
+    public BaseResponse getBusesFromSourceAndDestination(String source, String destination, String dateTime) {
+
+        // Get the day of the week
+        LocalDate date = LocalDate.parse(dateTime, DateTimeFormatter.ISO_DATE);
+        String dayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+        List<GetBusesQueryResponse> busIdList= busRouteRepository.getBusesIdsFromSourceAndDestination(source,destination);
+        if (Objects.isNull(busIdList))
+            throw new BusNotFoundException("Bus Not Found");
+        List<GetBusesResponse> getBusesResponseList=new ArrayList<>();
+        for (GetBusesQueryResponse getBus:busIdList){
+            Bus bus= busRepository.findByIdAndStatus(getBus.getBus_Id(), BusStatus.ACTIVE);
+            if (!Objects.isNull(bus) && bus.getAvailableDays().contains(dayOfWeek)){
+                GetBusesResponse getBusesResponse=GetBusesResponse.builder()
+                        .busNo(bus.getBusNo())
+                        .busName(bus.getBusName())
+                        .routeFrom(bus.getRouteFrom())
+                        .routeTo(bus.getRouteTo())
+                        .arrivalTime(bus.getArrivalTime())
+                        .departureTime(bus.getDepartureTime())
+                        .availableSeats(bus.getAvailableSeats())
+                        .distance(getBus.getDistance())
+                        .fare(getBus.getFare()).build();
+                getBusesResponseList.add(getBusesResponse);
+            }
+        }
+        return BaseResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("Fetch Buses Details Successfully")
+                .data(getBusesResponseList).build();
     }
 }

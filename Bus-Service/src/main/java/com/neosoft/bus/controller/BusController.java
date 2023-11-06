@@ -35,8 +35,13 @@ public class BusController {
         return ResponseEntity.ok(busService.deleteBus(busId));
     }
 
-    @GetMapping("/getStops/{busNo}")
-    public ResponseEntity getStopsByBusNo(@PathVariable Integer busNo){
-        return ResponseEntity.ok(busService.getStopsByBusNo(busNo));
+    @GetMapping("/getStops/{busId}")
+    public ResponseEntity getStopsByBusId(@PathVariable UUID busId){
+        return ResponseEntity.ok(busService.getStopsByBusId(busId));
+    }
+
+    @GetMapping("/getBuses")
+    public ResponseEntity getBusesFromSourceAndDestination(@RequestParam String source, @RequestParam String destination, @RequestParam String dateTime){
+        return ResponseEntity.ok(busService.getBusesFromSourceAndDestination(source,destination,dateTime));
     }
 }

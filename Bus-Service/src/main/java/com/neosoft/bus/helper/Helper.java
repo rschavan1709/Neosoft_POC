@@ -1,11 +1,9 @@
 package com.neosoft.bus.helper;
 
-import com.neosoft.bus.dto.BusRequest;
-import com.neosoft.bus.dto.BusResponse;
-import com.neosoft.bus.dto.BusRouteRequest;
-import com.neosoft.bus.dto.BusRouteResponse;
+import com.neosoft.bus.dto.*;
 import com.neosoft.bus.entity.Bus;
 import com.neosoft.bus.entity.BusRoute;
+import com.neosoft.bus.entity.BusStop;
 import com.neosoft.bus.enums.BusStatus;
 
 import java.util.ArrayList;
@@ -25,6 +23,13 @@ public class Helper {
                     .fare(busRouteRequest.getFare()).build();
             busRoutes.add(busRoute);
         }
+        List<BusStop> busStops=new ArrayList<>();
+        for (BusStopRequest busStopRequest :busRequest.getHaltStops()){
+            BusStop busStop=BusStop.builder()
+                    .haltStop(busStopRequest.getHaltStop())
+                    .time(busStopRequest.getTime()).build();
+            busStops.add(busStop);
+        }
         Bus bus= Bus.builder()
                 .busId(UUID.randomUUID())
                 .busName(busRequest.getBusName())
@@ -34,7 +39,8 @@ public class Helper {
                 .departureTime(busRequest.getDepartureTime())
                 .totalSeats(busRequest.getTotalSeats())
                 .availableSeats(busRequest.getTotalSeats())
-                .haltStops(busRequest.getHaltStops())
+                .availableDays(busRequest.getAvailableDays())
+                .haltStops(busStops)
                 .busRoutes(busRoutes)
                 .status(BusStatus.ACTIVE).build();
         return bus;
@@ -51,6 +57,13 @@ public class Helper {
                     .fare(busRoute.getFare()).build();
             busRoutes.add(busRouteResponse);
         }
+        List<BusStopResponse> busStops=new ArrayList<>();
+        for (BusStop busStop:bus.getHaltStops()){
+            BusStopResponse busStopResponse=BusStopResponse.builder()
+                    .haltStop(busStop.getHaltStop())
+                    .time(busStop.getTime()).build();
+            busStops.add(busStopResponse);
+        }
         BusResponse busResponse=BusResponse.builder()
                 .busId(bus.getBusId())
                 .busNo(bus.getBusNo())
@@ -61,7 +74,8 @@ public class Helper {
                 .departureTime(bus.getDepartureTime())
                 .totalSeats(bus.getTotalSeats())
                 .availableSeats(bus.getAvailableSeats())
-                .haltStops(bus.getHaltStops())
+                .availableDays(bus.getAvailableDays())
+                .haltStops(busStops)
                 .busRoutes(busRoutes)
                 .status(bus.getStatus()).build();
         return busResponse;

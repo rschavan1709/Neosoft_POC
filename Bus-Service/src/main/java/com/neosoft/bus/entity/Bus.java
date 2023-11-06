@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Data
@@ -28,9 +29,12 @@ public class Bus {
     private LocalTime departureTime;
     private Integer totalSeats;
     private Integer availableSeats;
-    private List<String> haltStops;
+    private List<String> availableDays;
     @Enumerated(EnumType.STRING)
     private BusStatus status;
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "bus_id")
+    private List<BusStop> haltStops;
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "bus_id")
     private List<BusRoute> busRoutes;
