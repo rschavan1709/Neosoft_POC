@@ -17,4 +17,6 @@ public interface UserService {
     BaseResponse updateUser(UserRequest userRequest,UUID userId);
 
     BaseResponse deleteUser(UUID userId);
+
+    BaseResponse getUserByEmail(String email);
 }

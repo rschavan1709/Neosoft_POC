@@ -18,6 +18,7 @@ public class UserResponse {
     private int age;
     private String mobileNo;
     private String email;
+    private String password;
     private UserRole role;
     private UserStatus status;
 }

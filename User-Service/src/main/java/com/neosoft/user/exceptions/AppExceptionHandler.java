@@ -27,6 +27,17 @@ public class AppExceptionHandler {
                 .build(),HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(UserAlreadyPresentException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public ResponseEntity<BaseResponse> alreadyPresentException(final UserAlreadyPresentException ex)
+    {
+        return new ResponseEntity<>(BaseResponse.builder()
+                .code(HttpStatus.CONFLICT.value())
+                .error(ex.getMessage())
+                .build(),HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
