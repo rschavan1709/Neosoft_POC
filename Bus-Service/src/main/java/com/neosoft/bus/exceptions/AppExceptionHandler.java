@@ -18,7 +18,6 @@ public class AppExceptionHandler {
     {
         return new ResponseEntity<>(BaseResponse.builder()
                 .code(HttpStatus.CONFLICT.value())
-                .message(ex.getMessage())
                 .error(ex.getMessage())
                 .build(),HttpStatus.CONFLICT);
     }
@@ -30,7 +29,6 @@ public class AppExceptionHandler {
     {
         return new ResponseEntity<>(BaseResponse.builder()
                 .code(HttpStatus.CONFLICT.value())
-                .message(ex.getMessage())
                 .error(ex.getMessage())
                 .build(),HttpStatus.CONFLICT);
     }
@@ -42,7 +40,6 @@ public class AppExceptionHandler {
     {
         return new ResponseEntity<>(BaseResponse.builder()
                 .code(HttpStatus.NOT_FOUND.value())
-                .message(ex.getMessage())
                 .error(ex.getMessage())
                 .build(),HttpStatus.NOT_FOUND);
     }

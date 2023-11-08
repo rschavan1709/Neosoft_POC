@@ -21,7 +21,7 @@ public class Bus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private UUID busId;
-    private Integer busNo;
+    private int busNo;
     private String busName;
     private String routeFrom;
     private String routeTo;

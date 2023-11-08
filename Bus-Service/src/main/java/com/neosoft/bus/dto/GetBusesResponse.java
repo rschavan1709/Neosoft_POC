@@ -8,7 +8,7 @@ import java.time.LocalTime;
 @Data
 @Builder
 public class GetBusesResponse {
-    private Integer busNo;
+    private int busNo;
     private String busName;
     private String routeFrom;
     private String routeTo;

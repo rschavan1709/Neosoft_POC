@@ -1,4 +1,4 @@
-package com.neosoft.user.dto;
+package com.neosoft.ticket.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

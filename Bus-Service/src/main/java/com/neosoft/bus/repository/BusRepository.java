@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface BusRepository extends JpaRepository<Bus,Integer> {
     Bus findByBusId(UUID busId);
-    Bus findByBusNo(Integer busNo);
+    Bus findByBusNo(int busNo);
     Bus findByBusName(String busName);
 
     Bus findByIdAndStatus(Integer busId, BusStatus status);

@@ -129,6 +129,8 @@ public class BusServiceImpl implements BusService {
                 getBusesResponseList.add(getBusesResponse);
             }
         }
+        if (Objects.isNull(getBusesResponseList))
+            throw new BusNotFoundException("Bus Not Found");
         return BaseResponse.builder()
                 .code(HttpStatus.OK.value())
                 .message("Fetch Buses Details Successfully")

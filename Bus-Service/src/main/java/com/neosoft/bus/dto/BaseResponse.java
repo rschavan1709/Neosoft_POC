@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 public class BaseResponse<T> {
-    private Integer code;
+    private int code;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String message;
     @JsonInclude(JsonInclude.Include.NON_NULL)
