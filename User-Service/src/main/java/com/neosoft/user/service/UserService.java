@@ -18,5 +18,5 @@ public interface UserService {
 
     BaseResponse deleteUser(UUID userId);
 
-    BaseResponse getUserByEmail(String email);
+    BaseResponse getLoggedInUser() throws Exception;
 }

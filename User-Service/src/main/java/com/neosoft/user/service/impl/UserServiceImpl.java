@@ -1,6 +1,7 @@
 package com.neosoft.user.service.impl;
 
 import com.neosoft.user.dto.BaseResponse;
+import com.neosoft.user.dto.LoggedInUserResponse;
 import com.neosoft.user.dto.UserRequest;
 import com.neosoft.user.dto.UserResponse;
 import com.neosoft.user.entity.User;
@@ -10,6 +11,7 @@ import com.neosoft.user.exceptions.UserAlreadyPresentException;
 import com.neosoft.user.exceptions.UserNotFoundException;
 import com.neosoft.user.repository.UserRepository;
 import com.neosoft.user.service.UserService;
+import com.neosoft.user.utils.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -147,24 +149,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseResponse getUserByEmail(String email) {
+    public BaseResponse getLoggedInUser() throws Exception {
+        String email= CommonUtil.getLoggedinUser().getUsername();
         User user=userRepository.findByEmail(email).get();
         if (Objects.isNull(user)){
             throw new UserNotFoundException("User Not Found");
         }
-        UserResponse userResponse=UserResponse.builder()
+        LoggedInUserResponse userResponse=LoggedInUserResponse.builder()
                 .userId(user.getUserId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .age(user.getAge())
                 .mobileNo(user.getMobileNo())
                 .email(user.getEmail())
-                .password(user.getPassword())
-                .role(user.getRole())
-                .status(user.getStatus()).build();
+                .build();
         return BaseResponse.builder()
                 .code(HttpStatus.OK.value())
-                .message("User Details Fetched Successfully")
+                .message("Logged In User Details Fetched Successfully")
                 .data(userResponse).build();
     }
 

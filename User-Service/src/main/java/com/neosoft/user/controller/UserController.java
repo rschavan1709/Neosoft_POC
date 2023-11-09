@@ -2,6 +2,7 @@ package com.neosoft.user.controller;
 
 import com.neosoft.user.dto.UserRequest;
 import com.neosoft.user.service.UserService;
+import com.neosoft.user.utils.CommonUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +27,6 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserByUserId(userId));
     }
 
-    @GetMapping("/getUserByEmail/{email}")
-    public ResponseEntity getUserByEmail(@PathVariable String email){
-        return ResponseEntity.ok(userService.getUserByEmail(email));
-    }
-
     @GetMapping("/getAll")
     public ResponseEntity getAllUsers(){
         return ResponseEntity.ok(userService.getAllUsers());
@@ -44,5 +40,10 @@ public class UserController {
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity deleteUser(@PathVariable UUID userId){
         return ResponseEntity.ok(userService.deleteUser(userId));
+    }
+
+    @GetMapping("/getLogInUser")
+    public ResponseEntity getLoggedInUser() throws Exception {
+        return ResponseEntity.ok(userService.getLoggedInUser());
     }
 }
