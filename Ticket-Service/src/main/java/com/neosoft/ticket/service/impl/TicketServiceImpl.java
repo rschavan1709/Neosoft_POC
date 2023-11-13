@@ -1,8 +1,6 @@
 package com.neosoft.ticket.service.impl;
 
-import com.neosoft.ticket.dto.BaseResponse;
-import com.neosoft.ticket.dto.TicketRequest;
-import com.neosoft.ticket.dto.TicketResponse;
+import com.neosoft.ticket.dto.*;
 import com.neosoft.ticket.entity.Ticket;
 import com.neosoft.ticket.enums.TicketStatus;
 import com.neosoft.ticket.exceptions.TicketNotFoundException;
@@ -48,8 +46,23 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public BaseResponse cancelTicket(int ticketNo) {
-        return null;
+    public BaseResponse cancelTicket(CancelTicketRequest cancelTicketRequest) {
+        Ticket ticket = ticketRepository.findByTicketId(cancelTicketRequest.getTicketId());
+        if (Objects.isNull(ticket))
+            throw new TicketNotFoundException("Ticket Not Found");
+        //implement later for refund amount
+        double refundAmount=0;
+        ticket.setRefundAmount(refundAmount);
+        ticket.setCancelTime(LocalDateTime.now());
+        ticket.setStatus(TicketStatus.CANCELLED);
+        ticket=ticketRepository.save(ticket);
+        CancelTicketResponse cancelTicketResponse=CancelTicketResponse.builder()
+                .ticketId(ticket.getTicketId())
+                .status(ticket.getStatus()).build();
+        return BaseResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("Ticket Cancelled Successfully")
+                .data(cancelTicketResponse).build();
     }
 
     @Override

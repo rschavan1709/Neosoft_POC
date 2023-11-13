@@ -1,5 +1,6 @@
 package com.neosoft.ticket.controller;
 
+import com.neosoft.ticket.dto.CancelTicketRequest;
 import com.neosoft.ticket.dto.TicketRequest;
 import com.neosoft.ticket.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,5 +21,10 @@ public class TicketController {
     @GetMapping("/get-ticket/{ticketNo}")
     public ResponseEntity getTicketByTicketNo(@PathVariable int ticketNo){
         return ResponseEntity.ok(ticketService.getTicketByTicketNo(ticketNo));
+    }
+
+    @PostMapping("/cancel-ticket")
+    public ResponseEntity cancelTicket(@RequestBody CancelTicketRequest cancelTicketRequest){
+        return ResponseEntity.ok(ticketService.cancelTicket(cancelTicketRequest));
     }
 }

@@ -37,7 +37,10 @@ public class Ticket {
     private LocalDate journeyDate;
     private double distance;
     private double ticketFare;
+    private double bookAmount;
+    private double refundAmount;
     private LocalDateTime bookTime;
+    private LocalDateTime cancelTime;
     @Enumerated(EnumType.STRING)
     private TicketStatus status;
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
