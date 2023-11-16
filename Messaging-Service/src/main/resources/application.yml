@@ -16,9 +16,9 @@ spring:
               packages: '*'
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
-TWILIO_ACCOUNT_SID: "AC8e0edffd2e03b09a5f794fd436bbc6fe"
-TWILIO_AUTH_TOKEN: "aa46921e7e48e2e2ddad339a28d187f8"
-TWILIO_OUTGOING_SMS_NUMBER: "+13344542163"
+TWILIO_ACCOUNT_SID:
+TWILIO_AUTH_TOKEN:
+TWILIO_OUTGOING_SMS_NUMBER:
 
 eureka:
   instance:
