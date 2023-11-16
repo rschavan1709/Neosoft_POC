@@ -1,14 +1,12 @@
 package com.neosoft.user.service.impl;
 
-import com.neosoft.user.dto.BaseResponse;
-import com.neosoft.user.dto.LoggedInUserResponse;
-import com.neosoft.user.dto.UserRequest;
-import com.neosoft.user.dto.UserResponse;
+import com.neosoft.user.dto.*;
 import com.neosoft.user.entity.User;
 import com.neosoft.user.enums.UserRole;
 import com.neosoft.user.enums.UserStatus;
 import com.neosoft.user.exceptions.UserAlreadyPresentException;
 import com.neosoft.user.exceptions.UserNotFoundException;
+import com.neosoft.user.producer.SMSProducer;
 import com.neosoft.user.repository.UserRepository;
 import com.neosoft.user.service.UserService;
 import com.neosoft.user.utils.CommonUtil;
@@ -28,6 +26,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private SMSProducer smsProducer;
+
     @Override
     public BaseResponse addUser(UserRequest userRequest) {
              Optional<User> userExists=userRepository.findByEmail(userRequest.getEmail());
@@ -44,6 +45,10 @@ public class UserServiceImpl implements UserService {
                      .role(UserRole.USER)
                      .status(UserStatus.ACTIVE).build();
             user=userRepository.save(user);
+            SMSSendRequest smsSendRequest=SMSSendRequest.builder()
+                    .destinationSMSNumber(user.getMobileNo())
+                    .smsMessages("Hello "+user.getFirstName()+",Your Account is registered successfully").build();
+            smsProducer.sendMessage(smsSendRequest);
             UserResponse userResponse=UserResponse.builder()
                     .userId(user.getUserId())
                     .firstName(user.getFirstName())

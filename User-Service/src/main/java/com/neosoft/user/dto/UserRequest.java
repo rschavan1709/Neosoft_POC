@@ -17,7 +17,7 @@ public class UserRequest {
     @Range(min = 1,message = "Age is mandatory and it should be greater than 1")
     private Integer age;
     @NotBlank(message = "Mobile No is mandatory")
-    @Pattern(regexp = "(0|91)?[6-9][0-9]{9}",message = "Mobile No is not valid.It must have 10 digits")
+    @Pattern(regexp = "\\+\\d{1,3}?[7-9][0-9]{9}",message = "Mobile No is not valid.It must have 10 digits and start with country code")
     private String mobileNo;
     @Email(message = "Email Id is not valid")
     @NotBlank(message = "Email Id is mandatory")

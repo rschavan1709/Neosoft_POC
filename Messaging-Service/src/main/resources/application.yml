@@ -1,0 +1,30 @@
+server:
+  port: 8084
+spring:
+  application:
+    name: Messaging-Service
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+      bootstrap-servers: localhost:9092
+      group-id: myGroup
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+TWILIO_ACCOUNT_SID: "AC8e0edffd2e03b09a5f794fd436bbc6fe"
+TWILIO_AUTH_TOKEN: "aa46921e7e48e2e2ddad339a28d187f8"
+TWILIO_OUTGOING_SMS_NUMBER: "+13344542163"
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8762/eureka
