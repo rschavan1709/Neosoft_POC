@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/sms")
 @Slf4j
 public class SMSRestController {
 
     @Autowired
-    SMSService smsService;
+    private SMSService smsService;
 
     @PostMapping("/processSMS")
     public String processSMS(@RequestBody SMSSendRequest smsSendRequest){
