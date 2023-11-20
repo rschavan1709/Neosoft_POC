@@ -1,4 +1,4 @@
-package com.neosoft.ticket.exceptions;
+package com.neosoft.ticket.external.exceptions;
 
 public class UserNotFoundException extends RuntimeException{
 

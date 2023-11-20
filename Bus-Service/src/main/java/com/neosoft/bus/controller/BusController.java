@@ -44,4 +44,14 @@ public class BusController {
     public ResponseEntity getBusesFromSourceAndDestination(@RequestParam String source, @RequestParam String destination, @RequestParam String dateTime){
         return ResponseEntity.ok(busService.getBusesFromSourceAndDestination(source,destination,dateTime));
     }
+
+    @GetMapping("/check-seat")
+    public ResponseEntity checkSeatAvailability(@PathVariable UUID busId,@PathVariable int travellers){
+        return ResponseEntity.ok(busService.checkSeatAvailability(busId,travellers));
+    }
+
+    @GetMapping("/update-seat")
+    public ResponseEntity updateAvailableSeats(@PathVariable UUID busId,@PathVariable int travellers){
+        return ResponseEntity.ok(busService.updateAvailableSeats(busId,travellers));
+    }
 }

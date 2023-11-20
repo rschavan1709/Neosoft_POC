@@ -1,6 +1,8 @@
 package com.neosoft.ticket.exceptions;
 
 import com.neosoft.ticket.dto.BaseResponse;
+import com.neosoft.ticket.external.exceptions.BusNotFoundException;
+import com.neosoft.ticket.external.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,10 +35,32 @@ public class AppExceptionHandler {
                 .build(),HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(BusNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ResponseEntity<BaseResponse> busNotFoundException(final BusNotFoundException ex)
+    {
+        return new ResponseEntity<>(BaseResponse.builder()
+                .code(HttpStatus.NOT_FOUND.value())
+                .error(ex.getMessage())
+                .build(),HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(TicketNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ResponseEntity<BaseResponse> ticketNotFoundException(final TicketNotFoundException ex)
+    {
+        return new ResponseEntity<>(BaseResponse.builder()
+                .code(HttpStatus.NOT_FOUND.value())
+                .error(ex.getMessage())
+                .build(),HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(SeatNotAvailableException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ResponseEntity<BaseResponse> seatNotAvailableException(final SeatNotAvailableException ex)
     {
         return new ResponseEntity<>(BaseResponse.builder()
                 .code(HttpStatus.NOT_FOUND.value())

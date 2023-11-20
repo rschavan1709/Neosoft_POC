@@ -3,6 +3,7 @@ package com.neosoft.bus.service.impl;
 import com.neosoft.bus.dto.*;
 import com.neosoft.bus.entity.Bus;
 import com.neosoft.bus.entity.BusStop;
+import com.neosoft.bus.enums.BusSeatStatus;
 import com.neosoft.bus.enums.BusStatus;
 import com.neosoft.bus.exceptions.BusAlreadyPresentException;
 import com.neosoft.bus.exceptions.BusNotFoundException;
@@ -13,9 +14,7 @@ import com.neosoft.bus.service.BusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -101,6 +100,35 @@ public class BusServiceImpl implements BusService {
                 .code(HttpStatus.OK.value())
                 .message("Bus Stops Fetched Successfully")
                 .data(haltStopResponseList).build();
+    }
+
+    @Override
+    public BaseResponse checkSeatAvailability(UUID busId,int travellers) {
+        Bus busDetails = busRepository.findByBusId(busId);
+        if (Objects.isNull(busDetails))
+            throw new BusNotFoundException("Bus Not Found");
+        BusSeatStatus busSeatStatus=null;
+        if (busDetails.getAvailableSeats() >= travellers)
+            busSeatStatus=BusSeatStatus.AVAILABLE;
+        else
+            busSeatStatus=BusSeatStatus.UNAVAILABLE;
+        return BaseResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("Check Seat Availability Successfully")
+                .data(busSeatStatus).build();
+    }
+
+    @Override
+    public BaseResponse updateAvailableSeats(UUID busId, int travellers) {
+        Bus busDetails = busRepository.findByBusId(busId);
+        if (Objects.isNull(busDetails))
+            throw new BusNotFoundException("Bus Not Found");
+        busDetails.setAvailableSeats(busDetails.getAvailableSeats()-travellers);
+        busRepository.save(busDetails);
+        return BaseResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("Update Available Seat Successfully")
+                .build();
     }
 
     @Override

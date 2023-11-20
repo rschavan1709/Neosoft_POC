@@ -3,8 +3,11 @@ package com.neosoft.ticket.service.impl;
 import com.neosoft.ticket.dto.*;
 import com.neosoft.ticket.entity.Ticket;
 import com.neosoft.ticket.enums.TicketStatus;
+import com.neosoft.ticket.exceptions.SeatNotAvailableException;
 import com.neosoft.ticket.exceptions.TicketNotFoundException;
 import com.neosoft.ticket.external.dto.LoggedInUserResponse;
+import com.neosoft.ticket.external.enums.BusSeatStatus;
+import com.neosoft.ticket.external.service.impl.FeignClientBusServiceImpl;
 import com.neosoft.ticket.external.service.impl.FeignClientUserServiceImpl;
 import com.neosoft.ticket.helper.HelperUtil;
 import com.neosoft.ticket.repository.TicketRepository;
@@ -22,10 +25,15 @@ public class TicketServiceImpl implements TicketService {
     @Autowired
     private FeignClientUserServiceImpl feignClientUserService;
     @Autowired
+    private FeignClientBusServiceImpl feignClientBusService;
+    @Autowired
     private TicketRepository ticketRepository;
 
     @Override
-    public BaseResponse bookTicket(TicketRequest ticketRequest) throws Exception {
+    public BaseResponse createTicket(TicketRequest ticketRequest) throws Exception {
+        BusSeatStatus status=feignClientBusService.checkSeatAvailability(ticketRequest.getBusId(),ticketRequest.getTravellers());
+        if (status.equals(BusSeatStatus.UNAVAILABLE))
+            throw new SeatNotAvailableException("Seats not available");
         Random random = new Random();
         Integer ticketNo  = random. nextInt(90000) + 10000;
         Ticket ticket= HelperUtil.convertTicketDtoToEntity(ticketRequest);
@@ -36,12 +44,12 @@ public class TicketServiceImpl implements TicketService {
         ticket.setEmailId(userResponse.getEmail());
         ticket.setMobileNo(userResponse.getMobileNo());
         ticket.setBookTime(LocalDateTime.now());
-        ticket.setStatus(TicketStatus.BOOKED);
+        ticket.setStatus(TicketStatus.CREATED);
         ticket = ticketRepository.save(ticket);
         TicketResponse ticketResponse=HelperUtil.convertTicketEntityToDto(ticket);
         return BaseResponse.builder()
                 .code(HttpStatus.OK.value())
-                .message("Ticket Booked Successfully")
+                .message("Ticket Created Successfully")
                 .data(ticketResponse).build();
     }
 

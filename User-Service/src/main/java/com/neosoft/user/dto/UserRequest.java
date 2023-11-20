@@ -22,5 +22,6 @@ public class UserRequest {
     @Email(message = "Email Id is not valid")
     @NotBlank(message = "Email Id is mandatory")
     private String email;
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\\\S+$).{8,15}$",message = "Password should be at least 8 characters and at most 15 characters. password have at least 1 uppercase character, 1 lowercase character, 1 special character and 1 digit")
     private String password;
 }

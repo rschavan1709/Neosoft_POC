@@ -24,6 +24,7 @@ public class Ticket {
     private int id;
     private UUID ticketId;
     private int ticketNo;
+    private int pnrNo;
     private String emailId;
     private String mobileNo;
     private UUID userId;

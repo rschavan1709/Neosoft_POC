@@ -13,9 +13,9 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
-    @PostMapping("/book-ticket")
-    public ResponseEntity bookTicket(@RequestBody TicketRequest ticketRequest) throws Exception {
-        return ResponseEntity.ok(ticketService.bookTicket(ticketRequest));
+    @PostMapping("/create-ticket")
+    public ResponseEntity createTicket(@RequestBody TicketRequest ticketRequest) throws Exception {
+        return ResponseEntity.ok(ticketService.createTicket(ticketRequest));
     }
 
     @GetMapping("/get-ticket/{ticketNo}")

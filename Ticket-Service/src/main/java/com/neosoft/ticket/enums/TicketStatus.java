@@ -1,5 +1,5 @@
 package com.neosoft.ticket.enums;
 
 public enum TicketStatus {
-    BOOKED,CANCELLED,FAILED
+   CREATED, BOOKED,CANCELLED,FAILED
 }
