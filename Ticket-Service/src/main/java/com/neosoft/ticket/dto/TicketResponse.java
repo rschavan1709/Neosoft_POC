@@ -27,6 +27,7 @@ public class TicketResponse {
     private LocalDate journeyDate;
     private double distance;
     private double ticketFare;
+    private double bookAmount;
     private LocalDateTime bookTime;
     private TicketStatus status;
     private List<PassengerResponse> passengers;
