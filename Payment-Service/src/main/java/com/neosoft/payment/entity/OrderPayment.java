@@ -29,7 +29,6 @@ public class OrderPayment {
     private String paymentId;
     private UUID transactionId;
     private BigDecimal amount;
-    private String currency;
     private UUID ticketId;
     @Enumerated(EnumType.STRING)
     private OrderPaymentStatus status;
